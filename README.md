@@ -6,7 +6,7 @@ This project documents the migration **from MySQL 8.0 to MariaDB**, replacing **
 ## 🎯 Who Is This For?
 - **Developers migrating from MySQL 8.0 to MariaDB** but facing compatibility issues (e.g., `JSON`, `CTE`, `FULLTEXT`, etc.).
 - **Applications relying on MySQL’s N-gram full-text search (mainly for Chinese) but finding that MariaDB **does not support N-gram**.
-- **Teams looking to replace MySQL FULLTEXT with OpenSearch/Elasticsearch** for improved scalability, distributed search, and advanced query capabilities.
+- **Teams looking to replace MySQL FULLTEXT with OpenSearch** for improved scalability, distributed search, and advanced query capabilities.
 
 ## 🚀 Why Migrate?
 - **MariaDB is fully open-source** and diverging from MySQL 8.0 in key features, making it a better long-term choice.
