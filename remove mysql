@@ -1,0 +1,87 @@
+# 卸载mysql
+# Uninstall MySQL
+systemctl stop mysql
+apt remove --purge mysql-server mysql-client mysql-common -y
+# 再次确认已备份到云 再继续
+# Check again whether having backup 
+rm -rf /var/lib/mysql
+
+apt autoremove -y
+apt autoclean
+
+# 安装mariaDB
+# Install MariaDB
+apt update
+apt install mariadb-server -y
+
+systemctl enable mariadb
+systemctl restart mariadb
+
+# 安全初始化
+# Secure initialization
+mysql_secure_installation
+
+# 打鸡血【暂时 迁移完成后 建议撤销 让mariaDb 自动管理】
+# Boost performance temporarily 【Recommend removing after migration to let MariaDB auto-manage】
+nano /etc/mysql/mariadb.conf.d/50-server.cnf
+
+[mysqld]
+innodb_buffer_pool_size = 4G
+innodb_buffer_pool_instances = 8
+innodb_thread_concurrency = 8
+innodb_read_io_threads = 8
+innodb_write_io_threads = 8
+
+# 改mariadb配置 支持utf8mb4
+# Modify MariaDB config to support utf8mb4
+nano /etc/mysql/mariadb.conf.d/50-server.cnf
+
+[mysqld]
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+skip-character-set-client-handshake
+
+systemctl restart mariadb
+
+# 改模式 utf8mb4_bin 支持对emoji的精准识别 严格匹配唯一性
+# Change collation to `utf8mb4_bin` for precise emoji recognition & strict uniqueness checks
+sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_bin/g' my_extended.sql
+
+# 取消任意截断 如果你有唯一索引 让mariadb 优化您的唯一性索引 优化为using hash
+# Disable silent truncation & optimize UNIQUE indexes by switching to `USING HASH`
+sed -i 's/UNIQUE KEY `uniq_a_b` (`a` *(123) *, *`b` *(456))/UNIQUE KEY `uniq_text_time` (`a`, `b`)/g' my_extended.sql
+
+# 执行迁移
+# Execute migration
+pv my_extended.sql | mariadb -u root
+
+# 安装 opensearch 2.15.0 + ik 代替 ngram全文索引
+# Install OpenSearch 2.15.0 + IK tokenizer as a replacement for N-gram full-text search
+# 【暂用 镜像】
+# 【Temporary mirror solution】
+docker pull swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/opensearchproject/opensearch:2.15.0
+# 【打 标签】
+# 【Tag the image】
+docker tag swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/opensearchproject/opensearch:2.15.0 opensearchproject/opensearch:2.15.0
+# 【初始化 例子中 Xms512m Xmx512m 可自由调整】
+# 【Initialize OpenSearch (Example: Xms512m Xmx512m, adjust freely)】
+docker run -d --name opensearch \
+  -p 9200:9200 -p 9600:9600 \
+  -e "discovery.type=single-node" \
+  -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YourP@ssw0rd!" \
+  -e "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" \
+  --restart unless-stopped opensearchproject/opensearch:2.15.0
+# 【使用https 但忽略证书】
+# 【Use HTTPS but ignore SSL certificate】
+curl -k -u 'admin:YourP@ssw0rd!' -X GET "https://localhost:9200"
+# 【安装 ik插件 切记严格核对来源 infinilabs】
+# 【Install the IK tokenizer plugin (verify the source: InfiniLabs)】
+docker exec -it opensearch bash
+bin/opensearch-plugin install https://get.infini.cloud/opensearch/analysis-ik/2.15.0
+exit
+docker restart opensearch
+
+# 对于python pip安装  asyncmy 适配mariadb
+# For Python: Install `asyncmy` to well support MariaDB
+pip install asyncmy
+
