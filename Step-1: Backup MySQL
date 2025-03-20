@@ -11,7 +11,7 @@ cp /var/lib/mysql your_cloud_object_storage://mysql_backup/mysql -r -f
 ALTER TABLE your_db_1.your_table DROP INDEX idx_text_fulltext;
 ALTER TABLE your_db_2.your_table DROP INDEX idx_text_fulltext;
 
-# 严重错误 切记不能取 all databases 对于迁移灾难性的
+# 严重错误 切记不能取 all databases 对于迁移 是灾难性的
 # DON'T DO THAT! Critical Error: Never dump all databases—disastrous for migration
 mysqldump -u root -p --all-databases --routines --triggers --events --single-transaction --extended-insert > all_databases.sql
 
