@@ -40,7 +40,7 @@ If this project helps you, just know that AI played a significant role in making
 ## 🎯 适用场景
 - 需要 **从 MySQL 8.0 迁移到 MariaDB**，但遇到了兼容性问题（如 `JSON`, `CTE`, `FULLTEXT` 等）。
 - 依赖 **MySQL N-gram 全文索引（主要用于支持中文搜索）**，但 MariaDB **不支持 N-gram**。
-- 希望用 **OpenSearch/Elasticsearch** 替代 MariaDB 的全文索引，获得更高效的搜索性能。
+- 希望用 **OpenSearch** 替代 MariaDB 的全文索引，获得更高效的搜索性能。
 
 ## 🚀 为什么要迁移？
 - **MariaDB 作为开源数据库**，与 MySQL 8.0 在某些特性上逐渐分化，适合长期开源发展。
