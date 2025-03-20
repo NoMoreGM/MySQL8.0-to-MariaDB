@@ -1,0 +1,53 @@
+# 迁移崩溃处理
+# Migration Crash Recovery
+pity that comes here, let's solve it
+
+# 卸载 MariaDB
+# Uninstall MariaDB
+systemctl stop mariadb
+apt remove --purge mariadb-server mariadb-client mariadb-common mariadb-server-core-* mariadb-client-core-* -y
+apt autoremove -y
+apt autoclean
+# 【务必确保 有云端备份 再操作】
+# 【Make sure you have a cloud backup before doing this!】
+rm -rf /var/lib/mysql
+
+# 卸载 MySQL
+# Uninstall MySQL
+systemctl stop mysql
+apt remove --purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-* -y
+apt autoremove -y
+apt autoclean
+# 【务必确保 有云端备份 再操作】
+# 【Make sure you have a cloud backup before doing this!】
+rm -rf /var/lib/mysql
+
+# 重装 MySQL
+# Reinstall MySQL
+apt update
+apt install mysql-server -y
+
+# 从云端恢复
+# Restore from Cloud Backup
+cp your_cloud_object_storage://mysql_backup/mysql/mysql /var/lib/mysql/ -r -f
+cp your_cloud_object_storage://mysql_backup/mysql/your_db_1 /var/lib/mysql/ -r -f
+cp your_cloud_object_storage://mysql_backup/mysql/your_db_2 /var/lib/mysql/ -r -f
+cp your_cloud_object_storage://mysql_backup/mysql/auto.cnf /var/lib/mysql/
+cp your_cloud_object_storage://mysql_backup/mysql/ibdata1 /var/lib/mysql/
+cp your_cloud_object_storage://mysql_backup/mysql/mysql.ibd /var/lib/mysql/
+cp your_cloud_object_storage://mysql_backup/mysql/ibtmp1 /var/lib/mysql/
+
+# 重新赋权
+# Reset permissions
+chown -R mysql:mysql /var/lib/mysql
+chmod -R 755 /var/lib/mysql
+
+# 重启 MySQL
+# Restart MySQL
+systemctl start mysql
+
+# 重新dump
+# Re-dump databases
+mysqldump -u root -p --databases your_db_1 your_db_2 --routines --triggers --events --single-transaction --extended-insert > my_extended.sql
+
+
