@@ -1,15 +1,22 @@
-【拥抱开源|Embracing Open Source】
+# 拥抱开源
+# Embracing Open Source
 mysql 8.0 -> MariaDB
 
-【备份 /var/lib/mysql 到云端|Backup `/var/lib/mysql` to the cloud】
-cp /var/lib/mysql your_cloud_object_storage/mysql_backup/mysql -r -f
+# 备份 /var/lib/mysql 到云端
+# Backup `/var/lib/mysql` to the cloud
+cp /var/lib/mysql your_cloud_object_storage://mysql_backup/mysql -r -f
 
-【基于ngram 的全文索引 不适配 先drop掉|Full-text index based on N-gram is incompatible, drop it first】
+# 基于ngram 的全文索引 不适配 先drop掉
+# Full-text index based on N-gram is incompatible, drop it first if 
 ALTER TABLE your_db_1.your_table DROP INDEX idx_text_fulltext;
 ALTER TABLE your_db_2.your_table DROP INDEX idx_text_fulltext;
 
-【严重错误 切记不能取 all databases 对于迁移灾难性的|Critical Error: Never dump all databases—disastrous for migration】
+# 严重错误 切记不能取 all databases 对于迁移灾难性的
+# DON'T DO THAT! Critical Error: Never dump all databases—disastrous for migration
 mysqldump -u root -p --all-databases --routines --triggers --events --single-transaction --extended-insert > all_databases.sql
 
-【导致迁移崩溃 需要恢复mysql后 重新dump|Migration failure: If MySQL crashes, restore MySQL and re-dump】
+# 如果导致迁移崩溃 需要恢复mysql后 重新dump
+# 按下面的命令dump 不会导致崩溃 
+# If migration crashes, restore MySQL and re-dump.
+# To avoid this issue, follow the correct process and use the command below to dump your databases properly.
 mysqldump -u root -p --databases your_db_1 your_db_2 --routines --triggers --events --single-transaction --extended-insert > my_extended.sql
