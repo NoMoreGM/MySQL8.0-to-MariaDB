@@ -24,6 +24,11 @@ This project documents the migration **from MySQL 8.0 to MariaDB**, replacing **
 ## 📖 Migration Guide
 👉 **Migration Steps: Backup MySQL → Remove MySQL → Handle Crash Issues**
 
+---
+
+## 🎉 Special Thanks
+No matter whether you like it or not, this entire migration journey was guided by **ChatGPT**. 🚀  
+If this project helps you, just know that AI played a significant role in making it happen. 😃  
 
 ---
 
@@ -52,3 +57,9 @@ This project documents the migration **from MySQL 8.0 to MariaDB**, replacing **
 
 ## 📖 详细迁移步骤
 👉 **迁移步骤：备份 MySQL → 移除 MySQL → 处理崩溃问题**
+
+---
+
+## 🎉 特别感谢
+不管你喜欢与否，这次完整的迁移之旅都得到了 **ChatGPT** 的全程指导。🚀  
+如果这个项目对你有所帮助，请记住，AI 在背后提供了很多支持！😃  
