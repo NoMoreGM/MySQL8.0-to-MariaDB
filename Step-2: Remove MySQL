@@ -3,7 +3,7 @@
 systemctl stop mysql
 apt remove --purge mysql-server mysql-client mysql-common -y
 # 再次确认已备份到云 再继续
-# Check again whether having backup 
+# Check again whether having backup on your cloud then continue
 rm -rf /var/lib/mysql
 
 apt autoremove -y
