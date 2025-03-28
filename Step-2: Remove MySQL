@@ -65,8 +65,11 @@ docker pull swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/opensearchproject
 docker tag swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/opensearchproject/opensearch:2.15.0 opensearchproject/opensearch:2.15.0
 # 【初始化 例子中 Xms512m Xmx512m 可自由调整】
 # 【Initialize OpenSearch (Example: Xms512m Xmx512m, adjust freely)】
+mkdir /var/lib/opensearch
+chown -R 1000:1000 /var/lib/opensearch/data
 docker run -d --name opensearch \
   -p 9200:9200 -p 9600:9600 \
+  -v /var/lib/opensearch/data:/usr/share/opensearch/data \
   -e "discovery.type=single-node" \
   -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YourP@ssw0rd!" \
   -e "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" \
@@ -85,3 +88,39 @@ docker restart opensearch
 # For Python: Install `asyncmy` to well support MariaDB
 pip install asyncmy
 
+# 批量卸载无用插件
+# Remove unnecessary plugins
+docker exec -it opensearch bash -c '
+for plugin in \
+opensearch-alerting \
+opensearch-anomaly-detection \
+opensearch-asynchronous-search \
+opensearch-cross-cluster-replication \
+opensearch-custom-codecs \
+opensearch-flow-framework \
+opensearch-geospatial \
+opensearch-index-management \
+opensearch-job-scheduler \
+opensearch-knn \
+opensearch-ml \
+opensearch-neural-search \
+opensearch-notifications \
+opensearch-notifications-core \
+opensearch-observability \
+opensearch-performance-analyzer \
+opensearch-reports-scheduler \
+opensearch-security-analytics \
+opensearch-skills \
+opensearch-sql; do
+  echo "🚮 Removing $plugin ..."
+  ./bin/opensearch-plugin remove "$plugin"
+done
+'
+
+docker restart opensearch
+
+# 禁用 Lucene 的 mmap 写缓存，防止内存“软泄漏”
+# Disable Lucene mmap (to reduce RAM waste)
+docker exec -it opensearch bash
+echo "-Dlucene.disable.mmap=true" >> config/jvm.options
+docker restart opensearch
