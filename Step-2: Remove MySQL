@@ -49,7 +49,7 @@ sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_bin/g' my_extended.sql
 
 # 取消任意截断 如果你有唯一索引 让mariadb 优化您的唯一性索引 优化为using hash
 # Disable silent truncation & optimize UNIQUE indexes by switching to `USING HASH`
-sed -i 's/UNIQUE KEY `uniq_a_b` (`a` *(123) *, *`b` *(456))/UNIQUE KEY `uniq_text_time` (`a`, `b`)/g' my_extended.sql
+sed -i 's/UNIQUE KEY `uniq_a_b` (`a` *(123) *, *`b` *(456))/UNIQUE KEY `uniq_a_b` (`a`, `b`)/g' my_extended.sql
 
 # 执行迁移
 # Execute migration
