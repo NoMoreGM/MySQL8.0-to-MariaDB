@@ -65,7 +65,7 @@ docker pull swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/opensearchproject
 docker tag swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/opensearchproject/opensearch:2.15.0 opensearchproject/opensearch:2.15.0
 # 【初始化 例子中 Xms512m Xmx512m 可自由调整】
 # 【Initialize OpenSearch (Example: Xms512m Xmx512m, adjust freely)】
-mkdir /var/lib/opensearch
+mkdir /var/lib/opensearch/data
 chown -R 1000:1000 /var/lib/opensearch/data
 docker run -d --name opensearch \
   -p 9200:9200 -p 9600:9600 \
